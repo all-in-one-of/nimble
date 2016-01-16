@@ -9,4 +9,4 @@ debug_env.Replace(CXX = "g++-4.8")
 #debug_env.Replace(LINKCOMSTR = "Linking $TARGET")
 #debug_env.Replace(SHLINKCOMSTR = "Linking $TARGET")
 
-SConscript('src/SConscript', variant_dir='debug', exports={'env':debug_env})
+SConscript('smoke/SConscript', variant_dir='debug', exports={'env':debug_env})

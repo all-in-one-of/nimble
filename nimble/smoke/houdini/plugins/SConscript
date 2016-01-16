@@ -1,0 +1,22 @@
+
+
+Import('env')
+
+lib_src = [
+			'SOP_Smoke_Source.cpp'
+			]
+
+env.Append(CCFLAGS=['-DVERSION=\"15.0.313\"','-D_GNU_SOURCE','-DLINUX','-DAMD64','-m64','-fPIC','-DSIZEOF_VOID_P=8','-DFBX_ENABLED=1'])
+env.Append(CCFLAGS=['-DOPENCL_ENABLED=1','-DOPENVDB_ENABLED=1','-DSESI_LITTLE_ENDIAN','-DENABLE_THREADS','-DUSE_PTHREADS','-D_REENTRANT'])
+env.Append(CCFLAGS=['-D_FILE_OFFSET_BITS=64','-c','-DGCC4','-DGCC3','-Wno-deprecated','-std=c++11'])
+env.Append(CCFLAGS=['-isystem','/opt/houdini/toolkit/include','-Wall','-W','-Wno-parentheses','-Wno-sign-compare','-Wno-reorder','-Wno-uninitialized'])
+env.Append(CCFLAGS=['-Wunused','-Wno-unused-parameter','-Wno-unused-local-typedefs','-O2','-fno-strict-aliasing','-DMAKING_DSO'])
+
+#env.Append(LINKFLAGS = ['-Wl,--no-undefined'])
+
+env.Append(LIBPATH = ['/usr/X11R6/lib64','/usr/X11R6/lib'])
+env.Append(LIBS = ['GLU','GL','X11','Xext','Xi','dl'])
+
+for file in lib_src:
+	lib_target = file.rstrip('.cpp')
+	lib = env.SharedLibrary(source = file , target = lib_target)
