@@ -3,7 +3,8 @@
 Import('env')
 
 lib_src = [
-			'SOP_Smoke_Source.cpp'
+			'SOP_Smoke_Source.cpp',
+			'SOP_OpenVDB_HelloWorld.cpp'
 			]
 
 
