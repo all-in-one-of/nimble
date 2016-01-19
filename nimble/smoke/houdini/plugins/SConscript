@@ -1,9 +1,9 @@
 
 
 Import('env')
-'''
+
 lib_src = [
-			'SOP_Smoke_Source.cpp'
+			'SOP_NS_Create_Sim.cpp'
 			]
 
 
@@ -11,4 +11,3 @@ for file in lib_src:
 	lib_target = file.rstrip('.cpp')
 	lib = env.SharedLibrary(source = file , target = lib_target)
 	
-'''
