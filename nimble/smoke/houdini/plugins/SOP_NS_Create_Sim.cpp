@@ -10,13 +10,11 @@
 #include <openvdb/openvdb.h>
 #include <GU/GU_PrimVDB.h>
 
-
 void newSopOperator(OP_OperatorTable *table)
 {
 	table->addOperator(
-			new OP_Operator("nimble_smoke_create_sim",
-					"Nimble Smoke Create Sim",
-					SOP_NS_Create_Sim::myConstructor,
+			new OP_Operator("ns_create_sim",
+					"NS Create Sim", SOP_NS_Create_Sim::myConstructor,
 					SOP_NS_Create_Sim::myTemplateList, 0, // Min required sources
 					1,	// Maximum sources
 					0));
@@ -48,8 +46,8 @@ SOP_NS_Create_Sim::myConstructor(OP_Network *net, const char *name,
 	return new SOP_NS_Create_Sim(net, name, op);
 }
 
-SOP_NS_Create_Sim::SOP_NS_Create_Sim(OP_Network *net,
-		const char *name, OP_Operator *op) :
+SOP_NS_Create_Sim::SOP_NS_Create_Sim(OP_Network *net, const char *name,
+		OP_Operator *op) :
 		SOP_Node(net, name, op)
 {
 }
@@ -65,23 +63,27 @@ void SOP_NS_Create_Sim::initSystem()
 OP_ERROR SOP_NS_Create_Sim::cookMySop(OP_Context &context)
 {
 
-    OP_AutoLockInputs inputs(this);
-    if (inputs.lock(context) >= UT_ERROR_ABORT)
-        return error();
+	OP_AutoLockInputs inputs(this);
+	if (inputs.lock(context) >= UT_ERROR_ABORT)
+		return error();
 
-    duplicateSource(0, context);
+	openvdb::initialize();
 
-    openvdb::initialize();
+	openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create();
 
-    openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create();
+	GU_PrimVDB* vdb = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, grid, NULL,
+			"gridName");
 
-    openvdb::FloatGrid::Accessor accessor = grid->getAccessor();
-    openvdb::Coord xyz(5,5,5);
-    accessor.setValue(xyz, 1.0);
-    xyz.reset(0,0,0);
-    accessor.setValue(xyz, 1.0);
+	const GU_Detail* bboxGdp = inputGeo(0);
+	UT_BoundingBox bbox;
+	bboxGdp->getBBox(&bbox);
+	UT_Vector3 min = bbox.minvec();
+	openvdb::Coord min1(min.x(), min.y(), min.z());
+	UT_Vector3 max = bbox.maxvec();
+	openvdb::Coord max1(max.x(), max.y(), max.z());
 
-    GU_PrimVDB* vdb = GU_PrimVDB::buildFromGrid((GU_Detail&)*gdp, grid, NULL, "gridName");
+    openvdb::CoordBBox bbox1(min1,max1);
+    grid->fill(bbox1,1,1);
 
 	return error();
 }
