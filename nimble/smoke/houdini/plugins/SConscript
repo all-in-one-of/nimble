@@ -3,7 +3,8 @@
 Import('env')
 
 lib_src = [
-			'SOP_NS_Create_Sim.cpp'
+			'SOP_NS_Create_Sim.cpp',
+			'SOP_NS_Add_Source.cpp'
 			]
 
 

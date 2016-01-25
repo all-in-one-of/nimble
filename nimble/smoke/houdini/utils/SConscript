@@ -1,0 +1,8 @@
+
+
+Import('env')
+
+lib_src = ['BlindDataManager.cpp']
+lib_target = 'houdini_utils'
+
+lib = env.StaticLibrary(source = lib_src , target = lib_target)
