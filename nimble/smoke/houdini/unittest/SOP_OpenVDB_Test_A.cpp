@@ -7,6 +7,7 @@
 #include <iostream>
 #include <openvdb/openvdb.h>
 #include <openvdb/tools/GridTransformer.h>
+#include <openvdb/tools/Composite.h>
 #include <GU/GU_PrimVDB.h>
 #include "SOP_OpenVDB_Test_A.h"
 
@@ -70,41 +71,56 @@ OP_ERROR SOP_OpenVDB_Test_A::cookMySop(OP_Context &context)
 	openvdb::initialize();
 
 	//------------Grid 1----------------
-	openvdb::FloatGrid::Ptr grid1 = openvdb::FloatGrid::create();
-	grid1->setTransform(openvdb::math::Transform::createLinearTransform(0.1));
-	grid1->fill(
-			openvdb::CoordBBox(openvdb::Coord(-1, -1, -1),
-					openvdb::Coord(1, 1, 1)), 1, 1);
-
-	GU_PrimVDB* vdb1 = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, grid1, NULL,
-			"grid1");
-	UT_Matrix4 mat1 = UT_Matrix4::getIdentityMatrix();
-	mat1.rotate(UT_Axis3::YAXIS, 45);
-	mat1.translate(4, 0, 0);
-	vdb1->setTransform4(mat1);
+//	openvdb::FloatGrid::Ptr grid1 = openvdb::FloatGrid::create();
+//	grid1->setTransform(openvdb::math::Transform::createLinearTransform(0.1));
+//	grid1->fill(
+//			openvdb::CoordBBox(openvdb::Coord(-1, -1, -1),
+//					openvdb::Coord(1, 1, 1)), 1, 1);
+//
+//	GU_PrimVDB* vdb1 = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, grid1, NULL,
+//			"grid1");
+//	UT_Matrix4 mat1 = UT_Matrix4::getIdentityMatrix();
+//	mat1.rotate(UT_Axis3::YAXIS, 45);
+//	mat1.translate(4, 0, 0);
+//	vdb1->setTransform4(mat1);
 	//------------Grid 1----------------
 
 	//------------Grid 2----------------
-	openvdb::FloatGrid::Ptr grid2 = openvdb::FloatGrid::create();
-	grid2->setTransform(openvdb::math::Transform::createLinearTransform(0.1));
-	grid2->fill(
+//	openvdb::FloatGrid::Ptr grid2 = openvdb::FloatGrid::create();
+//	grid2->setTransform(openvdb::math::Transform::createLinearTransform(0.1));
+//	grid2->fill(
+//			openvdb::CoordBBox(openvdb::Coord(-1, -1, -1),
+//					openvdb::Coord(1, 1, 1)), 1, 1);
+//
+//	GU_PrimVDB* vdb2 = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, grid2, NULL,
+//			"grid2");
+//    openvdb::FloatGrid::Ptr srcGrid2 = grid2->deepCopy();
+//
+//    openvdb::math::Mat4d mat = openvdb::math::Mat4d::identity();
+//    openvdb::math::Transform::Ptr linearTransform =
+//        openvdb::math::Transform::createLinearTransform(mat);
+//    linearTransform->preRotate(M_PI/4, openvdb::math::Y_AXIS);
+//
+//    openvdb::tools::GridTransformer transformer(linearTransform->baseMap()->getAffineMap()->getMat4());
+//    transformer.transformGrid<openvdb::tools::QuadraticSampler, openvdb::FloatGrid>(
+//        *srcGrid2, *grid2);
+	//------------Grid 2----------------
+
+	//------------Grid 3----------------
+	openvdb::FloatGrid::Ptr grid3A = openvdb::FloatGrid::create();
+	grid3A->fill(
 			openvdb::CoordBBox(openvdb::Coord(-1, -1, -1),
 					openvdb::Coord(1, 1, 1)), 1, 1);
 
-	GU_PrimVDB* vdb2 = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, grid2, NULL,
-			"grid2");
-    openvdb::FloatGrid::Ptr srcGrid2 = grid2->deepCopy();
+	openvdb::FloatGrid::Ptr grid3B = openvdb::FloatGrid::create();
+	grid3B->fill(
+			openvdb::CoordBBox(openvdb::Coord(0, 0, 0),
+					openvdb::Coord(2, 2, 2)), 1, 1);
 
-    openvdb::math::Mat4d mat = openvdb::math::Mat4d::identity();
-    openvdb::math::Transform::Ptr linearTransform =
-        openvdb::math::Transform::createLinearTransform(mat);
-    linearTransform->preRotate(M_PI/4, openvdb::math::Y_AXIS);
-
-    openvdb::tools::GridTransformer transformer(linearTransform->baseMap()->getAffineMap()->getMat4());
-    transformer.transformGrid<openvdb::tools::QuadraticSampler, openvdb::FloatGrid>(
-        *srcGrid2, *grid2);
-    //------------Grid 2----------------
-
+	openvdb::tools::compSum(*grid3A, *grid3B);
+	GU_PrimVDB* vdb3 = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, grid3A,
+			NULL, "grid3");
+	//------------Grid 3----------------
 
 	return error();
 }
