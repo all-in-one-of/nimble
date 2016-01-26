@@ -13,10 +13,10 @@
 void newSopOperator(OP_OperatorTable *table)
 {
 	table->addOperator(
-			new OP_Operator("openvdb_test_a",
-					"OpenVDB Test A", SOP_OpenVDB_Test_A::myConstructor,
+			new OP_Operator("openvdb_test_a", "OpenVDB Test A",
+					SOP_OpenVDB_Test_A::myConstructor,
 					SOP_OpenVDB_Test_A::myTemplateList, 0, // Min required sources
-					1,	// Maximum sources
+					0,	// Maximum sources
 					0));
 }
 
@@ -69,39 +69,42 @@ OP_ERROR SOP_OpenVDB_Test_A::cookMySop(OP_Context &context)
 
 	openvdb::initialize();
 
-	openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create();
+	//------------Grid 1----------------
+	openvdb::FloatGrid::Ptr grid1 = openvdb::FloatGrid::create();
+	grid1->setTransform(openvdb::math::Transform::createLinearTransform(0.1));
+	grid1->fill(
+			openvdb::CoordBBox(openvdb::Coord(-1, -1, -1),
+					openvdb::Coord(1, 1, 1)), 1, 1);
 
-	GU_PrimVDB* vdb = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, grid, NULL,
-			"gridName");
+	GU_PrimVDB* vdb1 = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, grid1, NULL,
+			"grid1");
+	UT_Matrix4 mat1 = UT_Matrix4::getIdentityMatrix();
+	mat1.rotate(UT_Axis3::YAXIS, 45);
+	mat1.translate(4, 0, 0);
+	vdb1->setTransform4(mat1);
+	//------------Grid 1----------------
 
-	const GU_Detail* bboxGdp = inputGeo(0);
-	UT_BoundingBox bbox;
-	bboxGdp->getBBox(&bbox);
-	UT_Vector3 min = bbox.minvec();
-	openvdb::Coord min1(min.x(), min.y(), min.z());
-	UT_Vector3 max = bbox.maxvec();
-	openvdb::Coord max1(max.x(), max.y(), max.z());
+	//------------Grid 2----------------
+	openvdb::FloatGrid::Ptr grid2 = openvdb::FloatGrid::create();
+	grid2->setTransform(openvdb::math::Transform::createLinearTransform(0.1));
+	grid2->fill(
+			openvdb::CoordBBox(openvdb::Coord(-1, -1, -1),
+					openvdb::Coord(1, 1, 1)), 1, 1);
 
-    openvdb::CoordBBox bbox1(min1,max1);
-    grid->fill(bbox1,1,1);
-    openvdb::FloatGrid::Ptr srcGrid = grid->deepCopy();
+	GU_PrimVDB* vdb2 = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, grid2, NULL,
+			"grid2");
+    openvdb::FloatGrid::Ptr srcGrid2 = grid2->deepCopy();
 
     openvdb::math::Mat4d mat = openvdb::math::Mat4d::identity();
     openvdb::math::Transform::Ptr linearTransform =
         openvdb::math::Transform::createLinearTransform(mat);
-    // Rotate the transform by 90 degrees about the X axis.
-    // As a result the j-index will now map into the -z physical direction,
-    // and the k-index will map to the +y physical direction.
     linearTransform->preRotate(M_PI/4, openvdb::math::Y_AXIS);
-//    grid->setTransform(linearTransform);
-
-//    openvdb::math::Transform& xform = grid->transform();
-//    xform.postTranslate(openvdb::math::Vec3d(100,0,0));
 
     openvdb::tools::GridTransformer transformer(linearTransform->baseMap()->getAffineMap()->getMat4());
-    // Resample using nearest-neighbor interpolation.
     transformer.transformGrid<openvdb::tools::QuadraticSampler, openvdb::FloatGrid>(
-        *srcGrid, *grid);
+        *srcGrid2, *grid2);
+    //------------Grid 2----------------
+
 
 	return error();
 }
