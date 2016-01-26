@@ -6,6 +6,7 @@
 #include <OP/OP_AutoLockInputs.h>
 #include <iostream>
 #include <openvdb/openvdb.h>
+#include <openvdb/tools/GridTransformer.h>
 #include <GU/GU_PrimVDB.h>
 #include "SOP_OpenVDB_Test_A.h"
 
@@ -83,6 +84,24 @@ OP_ERROR SOP_OpenVDB_Test_A::cookMySop(OP_Context &context)
 
     openvdb::CoordBBox bbox1(min1,max1);
     grid->fill(bbox1,1,1);
+    openvdb::FloatGrid::Ptr srcGrid = grid->deepCopy();
+
+    openvdb::math::Mat4d mat = openvdb::math::Mat4d::identity();
+    openvdb::math::Transform::Ptr linearTransform =
+        openvdb::math::Transform::createLinearTransform(mat);
+    // Rotate the transform by 90 degrees about the X axis.
+    // As a result the j-index will now map into the -z physical direction,
+    // and the k-index will map to the +y physical direction.
+    linearTransform->preRotate(M_PI/4, openvdb::math::Y_AXIS);
+//    grid->setTransform(linearTransform);
+
+//    openvdb::math::Transform& xform = grid->transform();
+//    xform.postTranslate(openvdb::math::Vec3d(100,0,0));
+
+    openvdb::tools::GridTransformer transformer(linearTransform->baseMap()->getAffineMap()->getMat4());
+    // Resample using nearest-neighbor interpolation.
+    transformer.transformGrid<openvdb::tools::QuadraticSampler, openvdb::FloatGrid>(
+        *srcGrid, *grid);
 
 	return error();
 }
