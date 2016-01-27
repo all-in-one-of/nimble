@@ -9,6 +9,7 @@
 #include <iostream>
 #include <openvdb/openvdb.h>
 #include <openvdb/tools/Composite.h>
+#include <openvdb/tools/GridTransformer.h>
 #include <GU/GU_PrimVDB.h>
 
 void newSopOperator(OP_OperatorTable *table)
@@ -80,14 +81,24 @@ OP_ERROR SOP_NS_Add_Source::cookMySop(OP_Context &context)
 	openvdb::FloatGrid::Ptr copyOfGridA = gridA->deepCopy();
 	vdb->setGrid(*copyOfGridA);
 
-
 	GU_PrimVDB* srcVdb = (GU_PrimVDB*) gdpB->getGEOPrimitiveByIndex(0);
 	openvdb::GridBase::Ptr gridBaseB = srcVdb->getGridPtr();
-	openvdb::FloatGrid::Ptr gridB = openvdb::gridPtrCast<openvdb::FloatGrid>(
+	openvdb::FloatGrid::Ptr sourceGridB = openvdb::gridPtrCast<openvdb::FloatGrid>(
 			gridBaseB);
 
+	openvdb::FloatGrid::Ptr targetGridB = copyOfGridA->deepCopy();
 
-	openvdb::tools::compMax(*copyOfGridA, *gridB);
+		const openvdb::math::Transform
+		    &sourceXform = sourceGridB->transform(),
+		    &targetXform = targetGridB->transform();
+		openvdb::Mat4R xform =
+		    sourceXform.baseMap()->getAffineMap()->getMat4() *
+		    targetXform.baseMap()->getAffineMap()->getMat4().inverse();
+		openvdb::tools::GridTransformer transformer(xform);
+		transformer.transformGrid<openvdb::tools::QuadraticSampler, openvdb::FloatGrid>(
+		    *sourceGridB, *targetGridB);
+
+		openvdb::tools::compSum(*copyOfGridA, *targetGridB);
 
 	return error();
 }

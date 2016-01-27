@@ -71,19 +71,24 @@ OP_ERROR SOP_NS_Create_Sim::cookMySop(OP_Context &context)
 
 	openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create();
 
-	GU_PrimVDB* vdb = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, grid, NULL,
-			"gridName");
 
+	double voxel_size = 0.05;
 	const GU_Detail* bboxGdp = inputGeo(0);
 	UT_BoundingBox bbox;
 	bboxGdp->getBBox(&bbox);
 	UT_Vector3 min = bbox.minvec();
-	openvdb::Coord min1(min.x(), min.y(), min.z());
+	openvdb::Coord min1(min.x()/voxel_size, min.y()/voxel_size, min.z()/voxel_size);
 	UT_Vector3 max = bbox.maxvec();
-	openvdb::Coord max1(max.x(), max.y(), max.z());
+	openvdb::Coord max1(max.x()/voxel_size, max.y()/voxel_size, max.z()/voxel_size);
 
     openvdb::CoordBBox bbox1(min1,max1);
-    grid->fill(bbox1,1,1);
+    grid->fill(bbox1,0.0,1);
+	openvdb::math::Transform::Ptr linearTransform =
+			openvdb::math::Transform::createLinearTransform(1);
+	linearTransform->postScale(voxel_size);
+	grid->setTransform(linearTransform);
 
+	GU_PrimVDB* vdb = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, grid, NULL,
+			"gridName");
 	return error();
 }
