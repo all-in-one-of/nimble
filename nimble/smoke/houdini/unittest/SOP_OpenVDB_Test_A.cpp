@@ -107,20 +107,61 @@ OP_ERROR SOP_OpenVDB_Test_A::cookMySop(OP_Context &context)
 	//------------Grid 2----------------
 
 	//------------Grid 3----------------
-	openvdb::FloatGrid::Ptr grid3A = openvdb::FloatGrid::create();
-	grid3A->fill(
-			openvdb::CoordBBox(openvdb::Coord(-1, -1, -1),
-					openvdb::Coord(1, 1, 1)), 1, 1);
-
-	openvdb::FloatGrid::Ptr grid3B = openvdb::FloatGrid::create();
-	grid3B->fill(
-			openvdb::CoordBBox(openvdb::Coord(0, 0, 0),
-					openvdb::Coord(2, 2, 2)), 1, 1);
-
-	openvdb::tools::compSum(*grid3A, *grid3B);
-	GU_PrimVDB* vdb3 = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, grid3A,
-			NULL, "grid3");
+//	openvdb::FloatGrid::Ptr grid3A = openvdb::FloatGrid::create();
+//	grid3A->fill(
+//			openvdb::CoordBBox(openvdb::Coord(-1, -1, -1),
+//					openvdb::Coord(1, 1, 1)), 1, 1);
+//
+//	openvdb::FloatGrid::Ptr grid3B = openvdb::FloatGrid::create();
+//	grid3B->fill(
+//			openvdb::CoordBBox(openvdb::Coord(1, 1, 1),
+//					openvdb::Coord(3, 3, 3)), 1, 1);
+//
+//	openvdb::tools::compSum(*grid3A, *grid3B);
+//	GU_PrimVDB* vdb3 = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, grid3A,
+//			NULL, "grid3");
 	//------------Grid 3----------------
+
+	//------------Grid 4----------------
+	//------------Recipe for composition of two grids with different transforms.
+	openvdb::FloatGrid::Ptr grid4A = openvdb::FloatGrid::create();
+	grid4A->fill(
+			openvdb::CoordBBox(openvdb::Coord(-10, -10, -10),
+					openvdb::Coord(10, 10, 10)), 1, 1);
+	openvdb::math::Transform::Ptr linearTransform4A =
+			openvdb::math::Transform::createLinearTransform(1);
+	linearTransform4A->postScale(0.1);
+	linearTransform4A->postRotate(M_PI / 4, openvdb::math::Y_AXIS);
+	linearTransform4A->postTranslate(openvdb::math::Vec3d(5, 0, 0));
+	grid4A->setTransform(linearTransform4A);
+
+	openvdb::FloatGrid::Ptr sourceGrid4B = openvdb::FloatGrid::create();
+	sourceGrid4B->fill(
+			openvdb::CoordBBox(openvdb::Coord(-10, -10, -10),
+					openvdb::Coord(10, 10, 10)), 1, 1);
+	openvdb::math::Transform::Ptr linearTransform4B =
+			openvdb::math::Transform::createLinearTransform(1);
+	linearTransform4B->postScale(0.1);
+	linearTransform4B->postRotate(M_PI / 4, openvdb::math::Y_AXIS);
+	linearTransform4B->postTranslate(openvdb::math::Vec3d(0, 0, 5));
+	sourceGrid4B->setTransform(linearTransform4B);
+
+	openvdb::FloatGrid::Ptr targetGrid4B = grid4A->deepCopy();
+
+	const openvdb::math::Transform
+	    &sourceXform = sourceGrid4B->transform(),
+	    &targetXform = targetGrid4B->transform();
+	openvdb::Mat4R xform =
+	    sourceXform.baseMap()->getAffineMap()->getMat4() *
+	    targetXform.baseMap()->getAffineMap()->getMat4().inverse();
+	openvdb::tools::GridTransformer transformer(xform);
+	transformer.transformGrid<openvdb::tools::QuadraticSampler, openvdb::FloatGrid>(
+	    *sourceGrid4B, *targetGrid4B);
+
+	openvdb::tools::compSum(*grid4A, *targetGrid4B);
+	GU_PrimVDB* vdb4 = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, grid4A,
+	NULL, "grid4");
+	//------------Grid 4----------------
 
 	return error();
 }
