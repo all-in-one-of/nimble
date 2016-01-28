@@ -79,7 +79,7 @@ OP_ERROR SOP_NS_Add_Source::cookMySop(OP_Context &context)
 	openvdb::FloatGrid::Ptr gridA = openvdb::gridPtrCast<openvdb::FloatGrid>(
 			gridBaseA);
 	openvdb::FloatGrid::Ptr copyOfGridA = gridA->deepCopy();
-	vdb->setGrid(*copyOfGridA);
+//	vdb->setGrid(*copyOfGridA);
 
 	GU_PrimVDB* srcVdb = (GU_PrimVDB*) gdpB->getGEOPrimitiveByIndex(0);
 	openvdb::GridBase::Ptr gridBaseB = srcVdb->getGridPtr();
@@ -98,7 +98,8 @@ OP_ERROR SOP_NS_Add_Source::cookMySop(OP_Context &context)
 		transformer.transformGrid<openvdb::tools::QuadraticSampler, openvdb::FloatGrid>(
 		    *sourceGridB, *targetGridB);
 
-		openvdb::tools::compSum(*copyOfGridA, *targetGridB);
+//		openvdb::tools::compMax(*copyOfGridA, *targetGridB);
+		openvdb::tools::compMax(*gridA, *targetGridB);
 
 	return error();
 }

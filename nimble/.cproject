@@ -53,7 +53,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="unittest|unit_test|smoke|houdini|fluid_solver" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="unit_test|smoke|houdini|unittest|fluid_solver" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="fluid_solver"/>
 						<entry excluding="unit_test" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="smoke"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="unittest"/>
@@ -104,7 +104,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="unittest|unit_test|smoke|houdini|fluid_solver" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="unit_test|smoke|houdini|unittest|fluid_solver" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="fluid_solver"/>
 						<entry excluding="unit_test" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="smoke"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="unittest"/>
