@@ -59,7 +59,7 @@ SOP_NS_Create_Sim::~SOP_NS_Create_Sim()
 
 void SOP_NS_Create_Sim::initSystem()
 {
-	smoke::houdini::BlindDataManager blindDataManager;
+	smoke::houdini::utils::BlindDataManager blindDataManager;
 	gdp->clearAndDestroy();
 	delete simDataPtr;
 	simDataPtr = new smoke::core::SimData();

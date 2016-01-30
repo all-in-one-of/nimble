@@ -1,0 +1,8 @@
+
+
+Import('env')
+
+lib_src = ['VdbSource.cpp']
+lib_target = 'sources'
+
+lib = env.StaticLibrary(source = lib_src , target = lib_target)

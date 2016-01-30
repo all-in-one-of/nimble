@@ -15,6 +15,6 @@ houdini_plugins_env = env.Clone()
 houdini_unittest_env = env.Clone()
 
 SConscript('utils/SConscript', exports={'env':houdini_utils_env})
-#SConscript('adapters/SConscript', exports={'env':houdini_adapters_env})
+SConscript('adapters/SConscript', exports={'env':houdini_adapters_env})
 SConscript('plugins/SConscript', exports={'env':houdini_plugins_env})
 SConscript('unittest/SConscript', exports={'env':houdini_unittest_env})

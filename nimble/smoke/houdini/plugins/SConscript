@@ -5,12 +5,22 @@ Import('env')
 
 lib_src = [
 			'SOP_NS_Create_Sim.cpp',
-			'SOP_NS_Add_Source.cpp'
+			'SOP_NS_Add_Source.cpp',
+			'SOP_Smoke_Solve_Sim.cpp'
 			]
 
 
 env.Append(LIBPATH = ['../utils'])
 env.Append(LIBS = ['houdini_utils'])
+
+env.Append(LIBPATH = ['../adapters'])
+env.Append(LIBS = ['houdini_adapters'])
+
+env.Append(LIBPATH = ['../../lib/sources'])
+env.Append(LIBS = ['sources'])
+
+env.Append(LIBPATH = ['../../lib/solver'])
+env.Append(LIBS = ['solver'])
 
 env.Append(LIBPATH = ['../../lib/core'])
 env.Append(LIBS = ['core'])

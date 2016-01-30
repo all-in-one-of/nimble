@@ -15,11 +15,14 @@ SimData::SimData()
 {
 	openvdb::initialize();
 	densityGridPtr = openvdb::FloatGrid::create();
+	subSteps = 1;
+	resetFrame = 1;
+	maxSubSteps = 10;
+	simulationTimeScale = 1;
 }
 
 SimData::~SimData()
 {
-	// TODO Auto-generated destructor stub
 }
 
 const openvdb::FloatGrid::Ptr& SimData::getDensityGridPtr() const

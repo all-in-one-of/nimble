@@ -14,17 +14,21 @@
 
 namespace smoke
 {
-	namespace houdini
-	{
-		class BlindDataManager
-		{
-		public:
-			BlindDataManager();
-			virtual ~BlindDataManager();
-			core::SimData* extractSimDataPtr(GU_Detail* gdp);
-			void insertSimDataPtr(GU_Detail* gdp, smoke::core::SimData* simDataPtr);
-		};
+namespace houdini
+{
+namespace utils
+{
 
-	} /* namespace houdini */
+class BlindDataManager
+{
+public:
+	BlindDataManager();
+	virtual ~BlindDataManager();
+	core::SimData* extractSimDataPtr(GU_Detail* gdp);
+	void insertSimDataPtr(GU_Detail* gdp, smoke::core::SimData* simDataPtr);
+};
+}
+
+} /* namespace houdini */
 } /* namespace solid */
 #endif /* BLINDDATAMANAGER_H_ */
