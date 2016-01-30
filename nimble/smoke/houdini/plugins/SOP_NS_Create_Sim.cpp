@@ -9,6 +9,7 @@
 #include <iostream>
 #include <openvdb/openvdb.h>
 #include <GU/GU_PrimVDB.h>
+#include <smoke/houdini/utils/BlindDataManager.h>
 
 void newSopOperator(OP_OperatorTable *table)
 {
@@ -58,19 +59,13 @@ SOP_NS_Create_Sim::~SOP_NS_Create_Sim()
 
 void SOP_NS_Create_Sim::initSystem()
 {
-}
+	smoke::houdini::BlindDataManager blindDataManager;
+	gdp->clearAndDestroy();
+	delete simDataPtr;
+	simDataPtr = new smoke::core::SimData();
+	blindDataManager.insertSimDataPtr(gdp, simDataPtr);
 
-OP_ERROR SOP_NS_Create_Sim::cookMySop(OP_Context &context)
-{
-
-	OP_AutoLockInputs inputs(this);
-	if (inputs.lock(context) >= UT_ERROR_ABORT)
-		return error();
-
-	openvdb::initialize();
-
-	openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create();
-
+	openvdb::FloatGrid::Ptr densityGridPtr = simDataPtr->getDensityGridPtr();
 
 	double voxel_size = 0.05;
 	const GU_Detail* bboxGdp = inputGeo(0);
@@ -82,13 +77,40 @@ OP_ERROR SOP_NS_Create_Sim::cookMySop(OP_Context &context)
 	openvdb::Coord max1(max.x()/voxel_size, max.y()/voxel_size, max.z()/voxel_size);
 
     openvdb::CoordBBox bbox1(min1,max1);
-    grid->fill(bbox1,0.0,1);
+    densityGridPtr->fill(bbox1,0.0,1);
 	openvdb::math::Transform::Ptr linearTransform =
 			openvdb::math::Transform::createLinearTransform(1);
 	linearTransform->postScale(voxel_size);
-	grid->setTransform(linearTransform);
+	densityGridPtr->setTransform(linearTransform);
 
-	GU_PrimVDB* vdb = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, grid, NULL,
+	GU_PrimVDB* vdb = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, densityGridPtr, NULL,
 			"gridName");
+}
+
+OP_ERROR SOP_NS_Create_Sim::cookMySop(OP_Context &context)
+{
+
+	OP_AutoLockInputs inputs(this);
+	if (inputs.lock(context) >= UT_ERROR_ABORT)
+		return error();
+
+
+	fpreal reset, currframe;
+	CH_Manager *chman;
+	OP_Node::flags().timeDep = 1;
+	chman = OPgetDirector()->getChannelManager();
+	currframe = chman->getSample(context.getTime());
+	reset = RESET();
+	if (currframe <= reset)
+	{
+		myLastCookTime = reset;
+		initSystem();
+	}
+
+//	openvdb::initialize();
+//
+//	openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create();
+
+
 	return error();
 }

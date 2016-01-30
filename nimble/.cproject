@@ -36,6 +36,7 @@
 									<listOptionValue builtIn="false" value="/opt/houdini/toolkit/include"/>
 									<listOptionValue builtIn="false" value="/usr/include"/>
 									<listOptionValue builtIn="false" value="/usr/include/openvdb"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nimble}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1238541495" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -53,7 +54,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="unit_test|smoke|houdini|unittest|fluid_solver" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="smoke|unit_test|debug|houdini|lib|unittest|fluid_solver" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="fluid_solver"/>
 						<entry excluding="unit_test" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="smoke"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="unittest"/>
@@ -104,7 +105,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="unit_test|smoke|houdini|unittest|fluid_solver" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="smoke|unit_test|debug|houdini|lib|unittest|fluid_solver" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="fluid_solver"/>
 						<entry excluding="unit_test" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="smoke"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="unittest"/>

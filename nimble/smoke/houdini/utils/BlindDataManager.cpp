@@ -9,7 +9,7 @@
 
 #include "GA/GA_AIFBlindData.h"
 
-namespace solid
+namespace smoke
 {
 	namespace houdini
 	{
@@ -25,22 +25,22 @@ namespace solid
 			// TODO Auto-generated destructor stub
 		}
 
-		openvdb::FloatGrid::Ptr BlindDataManager::extractGridPtr(GU_Detail* gdp)
+		core::SimData* BlindDataManager::extractSimDataPtr(GU_Detail* gdp)
 		{
 			const GA_ROAttributeRef attrRef = gdp->findAttribute(GA_ATTRIB_DETAIL, GA_SCOPE_PUBLIC,
-																	"Grid");
+																	"SimData");
 			const GA_Attribute *attr = attrRef.getAttribute();
 			const GA_AIFBlindData *blindData = attr->getAIFBlindData();
-			return blindData->getValue<openvdb::FloatGrid::Ptr>(attr, 0);
+			return blindData->getValue<smoke::core::SimData*>(attr, 0);
 		}
 
-		void BlindDataManager::insertGridPtr(GU_Detail* gdp, openvdb::FloatGrid::Ptr gridPtr)
+		void BlindDataManager::insertSimDataPtr(GU_Detail* gdp, smoke::core::SimData* simDataPtr)
 		{
-			GA_RWAttributeRef attrRef = gdp->createAttribute(GA_ATTRIB_DETAIL, GA_SCOPE_PUBLIC, "Grid",
+			GA_RWAttributeRef attrRef = gdp->createAttribute(GA_ATTRIB_DETAIL, GA_SCOPE_PUBLIC, "SimData",
 																NULL, NULL, "blinddata");
 			GA_Attribute *attr = attrRef.getAttribute();
 			const GA_AIFBlindData* blindData = attr->getAIFBlindData();
-			blindData->setDataSize(attr, sizeof(openvdb::FloatGrid::Ptr), &gridPtr);
+			blindData->setDataSize(attr, sizeof(smoke::core::SimData*), &simDataPtr);
 		}
 
 	} /* namespace houdini */

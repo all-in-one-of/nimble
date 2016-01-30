@@ -8,11 +8,11 @@
 #ifndef BLINDDATAMANAGER_H_
 #define BLINDDATAMANAGER_H_
 
+#include <smoke/lib/core/SimData.h>
+
 #include "GU/GU_Detail.h"
-#include <openvdb/openvdb.h>
 
-
-namespace solid
+namespace smoke
 {
 	namespace houdini
 	{
@@ -21,8 +21,8 @@ namespace solid
 		public:
 			BlindDataManager();
 			virtual ~BlindDataManager();
-			openvdb::FloatGrid::Ptr extractGridPtr(GU_Detail* gdp);
-			void insertGridPtr(GU_Detail* gdp, openvdb::FloatGrid::Ptr gridPtr);
+			core::SimData* extractSimDataPtr(GU_Detail* gdp);
+			void insertSimDataPtr(GU_Detail* gdp, smoke::core::SimData* simDataPtr);
 		};
 
 	} /* namespace houdini */

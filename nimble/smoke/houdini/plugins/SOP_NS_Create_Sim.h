@@ -1,6 +1,8 @@
 #ifndef __SOP_Solid_Create_Sim_h__
 #define __SOP_Solid_Create_Sim_h__
 
+#include <smoke/lib/core/SimData.h>
+
 #include <SOP/SOP_Node.h>
 
 #define INT_PARM(name, idx, vidx, t)	\
@@ -42,5 +44,6 @@ private:
 	}
 	fpreal myLastCookTime;	// Last cooked time
 	static int *myOffsets;
+	smoke::core::SimData* simDataPtr;
 };
 #endif

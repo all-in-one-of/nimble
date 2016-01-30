@@ -2,11 +2,18 @@
 
 Import('env')
 
+
 lib_src = [
 			'SOP_NS_Create_Sim.cpp',
 			'SOP_NS_Add_Source.cpp'
 			]
 
+
+env.Append(LIBPATH = ['../utils'])
+env.Append(LIBS = ['houdini_utils'])
+
+env.Append(LIBPATH = ['../../lib/core'])
+env.Append(LIBS = ['core'])
 
 for file in lib_src:
 	lib_target = file.rstrip('.cpp')

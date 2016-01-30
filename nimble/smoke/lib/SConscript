@@ -1,0 +1,5 @@
+Import('env')
+
+core_env = env.Clone()
+
+SConscript('core/SConscript', exports={'env':core_env})

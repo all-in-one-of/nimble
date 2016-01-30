@@ -1,7 +1,7 @@
 Import('env')
 
-#solver_env = env.Clone()
-#SConscript('solver/SConscript', exports={'env':solver_env})
+lib_env = env.Clone()
+SConscript('lib/SConscript', exports={'env':lib_env})
 
 houdini_env = env.Clone()
 SConscript('houdini/SConscript', exports={'env':houdini_env})
