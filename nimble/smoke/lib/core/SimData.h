@@ -19,10 +19,10 @@ namespace core
 class SimData
 {
 public:
-	SimData();
+	SimData(openvdb::CoordBBox bbox,smoke::core::Scalar voxelSize);
 	virtual ~SimData();
-	const openvdb::FloatGrid::Ptr& getDensityGridPtr() const;
-	void setDensityGridPtr(const openvdb::FloatGrid::Ptr& densityGridPtr);
+	const openvdb::FloatGrid::Ptr& getDensityPtr() const;
+	void setDensityPtr(const openvdb::FloatGrid::Ptr& densityGridPtr);
 	Scalar getResetFrame() const
 	{
 		return resetFrame;
@@ -50,7 +50,7 @@ public:
 
 	std::vector<smoke::sources::VdbSource*> sources;
 private:
-	openvdb::FloatGrid::Ptr densityGridPtr;
+	openvdb::FloatGrid::Ptr densityPtr;
 	Scalar resetFrame;
 	Scalar subSteps;
 	Scalar maxSubSteps;

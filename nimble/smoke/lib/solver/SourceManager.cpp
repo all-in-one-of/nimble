@@ -31,7 +31,7 @@ SourceManager::~SourceManager()
 
 void smoke::solver::SourceManager::accumulateSources(smoke::core::SimData* simDataPtr)
 {
-	smoke::core::FloatGridPtr gridA = simDataPtr->getDensityGridPtr();
+	smoke::core::FloatGridPtr gridA = simDataPtr->getDensityPtr();
 	for (std::vector<smoke::sources::VdbSource*>::iterator source =
 			simDataPtr->sources.begin(); source != simDataPtr->sources.end(); ++source)
 	{

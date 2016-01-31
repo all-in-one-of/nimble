@@ -14,8 +14,8 @@
 void newSopOperator(OP_OperatorTable *table)
 {
 	table->addOperator(
-			new OP_Operator("ns_create_sim",
-					"NS Create Sim", SOP_NS_Create_Sim::myConstructor,
+			new OP_Operator("ns_create_sim", "NS Create Sim",
+					SOP_NS_Create_Sim::myConstructor,
 					SOP_NS_Create_Sim::myTemplateList, 0, // Min required sources
 					1,	// Maximum sources
 					0));
@@ -59,36 +59,24 @@ SOP_NS_Create_Sim::~SOP_NS_Create_Sim()
 
 void SOP_NS_Create_Sim::initSystem()
 {
-//	std::cout << "SOP_NS_Create_Sim::initSystem START" << std::endl;
 	smoke::houdini::utils::BlindDataManager blindDataManager;
 	gdp->clearAndDestroy();
 	delete simDataPtr;
-	simDataPtr = new smoke::core::SimData();
-	blindDataManager.insertSimDataPtr(gdp, simDataPtr);
 
-	//--------Shift this part into SimData Constructor
-	openvdb::FloatGrid::Ptr densityGridPtr = simDataPtr->getDensityGridPtr();
-
-	double voxel_size = 0.05;
 	const GU_Detail* bboxGdp = inputGeo(0);
 	UT_BoundingBox bbox;
 	bboxGdp->getBBox(&bbox);
-	UT_Vector3 min = bbox.minvec();
-	openvdb::Coord min1(min.x()/voxel_size, min.y()/voxel_size, min.z()/voxel_size);
-	UT_Vector3 max = bbox.maxvec();
-	openvdb::Coord max1(max.x()/voxel_size, max.y()/voxel_size, max.z()/voxel_size);
+	double voxel_size = 0.05;
+	openvdb::CoordBBox bbox2(
+			openvdb::Coord(bbox.minvec().x(), bbox.minvec().y(),
+					bbox.minvec().z()),
+			openvdb::Coord(bbox.maxvec().x(), bbox.maxvec().y(),
+					bbox.maxvec().z()));
+	simDataPtr = new smoke::core::SimData(bbox2, voxel_size);
 
-    openvdb::CoordBBox bbox1(min1,max1);
-    densityGridPtr->fill(bbox1,0.0,1);
-	openvdb::math::Transform::Ptr linearTransform =
-			openvdb::math::Transform::createLinearTransform(1);
-	linearTransform->postScale(voxel_size);
-	densityGridPtr->setTransform(linearTransform);
-	//--------Shift this part into SimData Constructor
-
-	GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, densityGridPtr, NULL,
-			"density");
-//	std::cout << "SOP_NS_Create_Sim::initSystem END" << std::endl;
+	blindDataManager.insertSimDataPtr(gdp, simDataPtr);
+	GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, simDataPtr->getDensityPtr(),
+	NULL, "density");
 }
 
 OP_ERROR SOP_NS_Create_Sim::cookMySop(OP_Context &context)
@@ -97,7 +85,6 @@ OP_ERROR SOP_NS_Create_Sim::cookMySop(OP_Context &context)
 	OP_AutoLockInputs inputs(this);
 	if (inputs.lock(context) >= UT_ERROR_ABORT)
 		return error();
-
 
 	fpreal reset, currframe;
 	CH_Manager *chman;
