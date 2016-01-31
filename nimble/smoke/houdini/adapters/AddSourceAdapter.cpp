@@ -17,6 +17,7 @@ namespace adapters
 
 AddSourceAdapter::AddSourceAdapter(smoke::core::SimData* simDataPtr,smoke::core::FloatGridPtr grid)
 {
+//	std::cout <<"AddSourceAdapter::AddSourceAdapter CALLED" << std::endl;
 	smoke::sources::VdbSource* vdb_src = new smoke::sources::VdbSource(grid);
 	simDataPtr->sources.push_back(vdb_src);
 }

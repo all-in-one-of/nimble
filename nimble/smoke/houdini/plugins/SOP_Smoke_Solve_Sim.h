@@ -21,7 +21,6 @@ namespace HDK_Sample
 		static OP_Node *myConstructor(OP_Network*, const char *, OP_Operator *);
 	protected:
 		virtual const char *inputLabel(unsigned idx) const;
-		void initSystem();
 		virtual OP_ERROR cookMySop(OP_Context &context);
 	private:
 		int RESET()
@@ -38,7 +37,7 @@ namespace HDK_Sample
 		}
 		fpreal myLastCookTime;	// Last cooked time
 		static int *myOffsets;
-		const GU_Detail* sourceGDP;
+//		const GU_Detail* sourceGDP;
 		smoke::core::SimData* simDataPtr;
 	};
 } // End HDK_Sample namespace

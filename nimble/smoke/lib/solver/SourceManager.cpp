@@ -35,6 +35,7 @@ void smoke::solver::SourceManager::accumulateSources(smoke::core::SimData* simDa
 	for (std::vector<smoke::sources::VdbSource*>::iterator source =
 			simDataPtr->sources.begin(); source != simDataPtr->sources.end(); ++source)
 	{
+//		std::cout << "SourceManager::accumulateSources START" << std::endl;
 		smoke::core::FloatGridPtr sourceGridB = (*source)->getFloatGridPtr();
 
 		openvdb::FloatGrid::Ptr targetGridB = gridA->deepCopy();
@@ -51,4 +52,5 @@ void smoke::solver::SourceManager::accumulateSources(smoke::core::SimData* simDa
 
 			openvdb::tools::compMax(*gridA, *targetGridB);
 	}
+	simDataPtr->sources.clear();
 }

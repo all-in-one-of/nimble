@@ -39,17 +39,14 @@ SOP_Smoke_Solve_Sim::SOP_Smoke_Solve_Sim(OP_Network *net, const char *name, OP_O
 {
 	if (!myOffsets)
 		myOffsets = allocIndirect(32);
-	sourceGDP = NULL;
+//	sourceGDP = NULL;
 	simDataPtr = NULL;
 	myLastCookTime = 0;
 }
 SOP_Smoke_Solve_Sim::~SOP_Smoke_Solve_Sim()
 {
 }
-void SOP_Smoke_Solve_Sim::initSystem()
-{
 
-}
 OP_ERROR SOP_Smoke_Solve_Sim::cookMySop(OP_Context &context)
 {
 	fpreal reset, currframe;
@@ -59,7 +56,7 @@ OP_ERROR SOP_Smoke_Solve_Sim::cookMySop(OP_Context &context)
 		return error();
 	OP_Node::flags().timeDep = 1;
 	duplicateSource(0, context);
-	sourceGDP = inputGeo(0);
+//	sourceGDP = inputGeo(0);
 	chman = OPgetDirector()->getChannelManager();
 	currframe = chman->getSample(context.getTime());
 	reset = RESET();
@@ -67,7 +64,6 @@ OP_ERROR SOP_Smoke_Solve_Sim::cookMySop(OP_Context &context)
 	if (currframe <= reset)
 	{
 		myLastCookTime = reset;
-		initSystem();
 	}
 //	currframe += 0.05;	// Add a bit to avoid floating point error
 
@@ -82,10 +78,8 @@ OP_ERROR SOP_Smoke_Solve_Sim::cookMySop(OP_Context &context)
 		fpreal fps = OPgetDirector()->getChannelManager()->getSamplesPerSec();
 		adapter.stepForward(fps / simDataPtr->getSimulationTimeScale(), simDataPtr->getSubSteps());
 		myLastCookTime += 1;
+//		std::cout << "myLastCookTime : " << myLastCookTime << std::endl;
 	}
-
-	GU_PrimVDB* vdb = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, simDataPtr->getDensityGridPtr(), NULL,
-			"gridName");
 
 	unlockInputs();
 	return error();

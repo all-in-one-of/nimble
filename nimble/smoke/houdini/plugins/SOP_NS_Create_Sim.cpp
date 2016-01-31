@@ -59,12 +59,14 @@ SOP_NS_Create_Sim::~SOP_NS_Create_Sim()
 
 void SOP_NS_Create_Sim::initSystem()
 {
+//	std::cout << "SOP_NS_Create_Sim::initSystem START" << std::endl;
 	smoke::houdini::utils::BlindDataManager blindDataManager;
 	gdp->clearAndDestroy();
 	delete simDataPtr;
 	simDataPtr = new smoke::core::SimData();
 	blindDataManager.insertSimDataPtr(gdp, simDataPtr);
 
+	//--------Shift this part into SimData Constructor
 	openvdb::FloatGrid::Ptr densityGridPtr = simDataPtr->getDensityGridPtr();
 
 	double voxel_size = 0.05;
@@ -82,9 +84,11 @@ void SOP_NS_Create_Sim::initSystem()
 			openvdb::math::Transform::createLinearTransform(1);
 	linearTransform->postScale(voxel_size);
 	densityGridPtr->setTransform(linearTransform);
+	//--------Shift this part into SimData Constructor
 
-	GU_PrimVDB* vdb = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, densityGridPtr, NULL,
-			"gridName");
+	GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, densityGridPtr, NULL,
+			"density");
+//	std::cout << "SOP_NS_Create_Sim::initSystem END" << std::endl;
 }
 
 OP_ERROR SOP_NS_Create_Sim::cookMySop(OP_Context &context)
@@ -106,11 +110,6 @@ OP_ERROR SOP_NS_Create_Sim::cookMySop(OP_Context &context)
 		myLastCookTime = reset;
 		initSystem();
 	}
-
-//	openvdb::initialize();
-//
-//	openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create();
-
 
 	return error();
 }

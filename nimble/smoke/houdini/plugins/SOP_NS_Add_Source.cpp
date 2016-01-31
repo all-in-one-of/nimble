@@ -66,21 +66,21 @@ void SOP_NS_Add_Source::initSystem()
 
 OP_ERROR SOP_NS_Add_Source::cookMySop(OP_Context &context)
 {
-
 	OP_AutoLockInputs inputs(this);
 	if (inputs.lock(context) >= UT_ERROR_ABORT)
 		return error();
 
-	openvdb::initialize();
+//	std::cout <<"SOP_NS_Add_Source::cookMySop START" << std::endl;
+//	openvdb::initialize();
 
 	duplicateSource(0, context);
 	const GU_Detail* gdpB = inputGeo(1);
 
-	GU_PrimVDB* vdb = (GU_PrimVDB*) gdp->getGEOPrimitiveByIndex(0);
-	openvdb::GridBase::Ptr gridBaseA = vdb->getGridPtr();
-	openvdb::FloatGrid::Ptr gridA = openvdb::gridPtrCast<openvdb::FloatGrid>(
-			gridBaseA);
-	openvdb::FloatGrid::Ptr copyOfGridA = gridA->deepCopy();
+//	GU_PrimVDB* vdb = (GU_PrimVDB*) gdp->getGEOPrimitiveByIndex(0);
+//	openvdb::GridBase::Ptr gridBaseA = vdb->getGridPtr();
+//	openvdb::FloatGrid::Ptr gridA = openvdb::gridPtrCast<openvdb::FloatGrid>(
+//			gridBaseA);
+//	openvdb::FloatGrid::Ptr copyOfGridA = gridA->deepCopy();
 //	vdb->setGrid(*copyOfGridA);
 
 	GU_PrimVDB* srcVdb = (GU_PrimVDB*) gdpB->getGEOPrimitiveByIndex(0);
@@ -108,7 +108,7 @@ OP_ERROR SOP_NS_Add_Source::cookMySop(OP_Context &context)
 		smoke::core::SimData* simDataPtr = blindDataManager.extractSimDataPtr(gdp);
 
 		smoke::houdini::adapters::AddSourceAdapter adapter(simDataPtr,sourceGridB);
-
+//		std::cout <<"SOP_NS_Add_Source::cookMySop END" << std::endl;
 
 
 	return error();

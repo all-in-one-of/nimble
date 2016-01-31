@@ -159,7 +159,7 @@ OP_ERROR SOP_OpenVDB_Test_A::cookMySop(OP_Context &context)
 	    *sourceGrid4B, *targetGrid4B);
 
 	openvdb::tools::compSum(*grid4A, *targetGrid4B);
-	GU_PrimVDB* vdb4 = GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, grid4A,
+	GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, grid4A,
 	NULL, "grid4");
 	//------------Grid 4----------------
 
