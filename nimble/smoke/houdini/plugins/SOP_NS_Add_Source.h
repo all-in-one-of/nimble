@@ -3,11 +3,6 @@
 
 #include <SOP/SOP_Node.h>
 
-#define INT_PARM(name, idx, vidx, t)	\
-	    return evalInt(name, &myOffsets[idx], vidx, t);
-#define FLT_PARM(name, idx, vidx, t)	\
-	    return evalFloat(name, &myOffsets[idx], vidx, t);
-
 class SOP_NS_Add_Source: public SOP_Node
 {
 public:
@@ -19,28 +14,5 @@ public:
 protected:
 	void initSystem();
 	virtual OP_ERROR cookMySop(OP_Context &context);
-private:
-	int RESET()
-	{
-		return evalInt("reset", 0, 0);
-	}
-	int SUBSTEPS()
-	{
-		return evalInt("subSteps", 0, 0);
-	}
-	int MAX_SUBSTEPS()
-	{
-		return evalInt("maxSubSteps", 0, 0);
-	}
-	float SIM_TIME_SCALE()
-	{
-		return evalFloat("sim_time_scale", 0, 0);
-	}
-	float COLLISION_TOLERANCE()
-	{
-		return evalFloat("collision_tolerance", 0, 0);
-	}
-	fpreal myLastCookTime;	// Last cooked time
-	static int *myOffsets;
 };
 #endif

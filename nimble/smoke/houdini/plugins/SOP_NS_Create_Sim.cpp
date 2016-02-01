@@ -14,41 +14,33 @@
 void newSopOperator(OP_OperatorTable *table)
 {
 	table->addOperator(
-			new OP_Operator("ns_create_sim", "NS Create Sim",
-					SOP_NS_Create_Sim::myConstructor,
+			new OP_Operator("ns_create_sim", "NS Create Sim", SOP_NS_Create_Sim::myConstructor,
 					SOP_NS_Create_Sim::myTemplateList, 0, // Min required sources
 					1,	// Maximum sources
 					0));
 }
 
 static PRM_Name names[] =
-{ PRM_Name("reset", "Reset Frame"), PRM_Name("subSteps", "Sub Steps"), PRM_Name(
-		"maxSubSteps", "Max Sub Steps"), PRM_Name("sim_time_scale",
-		"Simulation Time Scale"), PRM_Name("collision_tolerance",
-		"Collision Tolerance") };
+{ PRM_Name("reset", "Reset Frame"), PRM_Name("subSteps", "Sub Steps"), PRM_Name("maxSubSteps",
+		"Max Sub Steps"), PRM_Name("sim_time_scale", "Simulation Time Scale") };
 
 static PRM_Default defaultSubSteps(1);
 static PRM_Default defaultMaxSubSteps(200);
-static PRM_Default defaultCollTolerance(0.01);
 
 PRM_Template SOP_NS_Create_Sim::myTemplateList[] =
-{ PRM_Template(PRM_INT, 1, &names[0], PRMoneDefaults), PRM_Template(PRM_INT_J,
-		1, &names[1], &defaultSubSteps), PRM_Template(PRM_INT_J, 1, &names[2],
-		&defaultMaxSubSteps), PRM_Template(PRM_FLT, 1, &names[3],
-		PRMoneDefaults), PRM_Template(PRM_FLT, 1, &names[4],
-		&defaultCollTolerance), PRM_Template(), };
+{ PRM_Template(PRM_INT, 1, &names[0], PRMoneDefaults), PRM_Template(PRM_INT_J, 1, &names[1],
+		&defaultSubSteps), PRM_Template(PRM_INT_J, 1, &names[2], &defaultMaxSubSteps), PRM_Template(
+		PRM_FLT, 1, &names[3], PRMoneDefaults), PRM_Template(), };
 
 int * SOP_NS_Create_Sim::myOffsets = 0;
 
 OP_Node *
-SOP_NS_Create_Sim::myConstructor(OP_Network *net, const char *name,
-		OP_Operator *op)
+SOP_NS_Create_Sim::myConstructor(OP_Network *net, const char *name, OP_Operator *op)
 {
 	return new SOP_NS_Create_Sim(net, name, op);
 }
 
-SOP_NS_Create_Sim::SOP_NS_Create_Sim(OP_Network *net, const char *name,
-		OP_Operator *op) :
+SOP_NS_Create_Sim::SOP_NS_Create_Sim(OP_Network *net, const char *name, OP_Operator *op) :
 		SOP_Node(net, name, op)
 {
 }
@@ -68,11 +60,10 @@ void SOP_NS_Create_Sim::initSystem()
 	bboxGdp->getBBox(&bbox);
 	double voxel_size = 0.05;
 	openvdb::CoordBBox bbox2(
-			openvdb::Coord(bbox.minvec().x(), bbox.minvec().y(),
-					bbox.minvec().z()),
-			openvdb::Coord(bbox.maxvec().x(), bbox.maxvec().y(),
-					bbox.maxvec().z()));
-	simDataPtr = new smoke::core::SimData(bbox2, voxel_size);
+			openvdb::Coord(bbox.minvec().x(), bbox.minvec().y(), bbox.minvec().z()),
+			openvdb::Coord(bbox.maxvec().x(), bbox.maxvec().y(), bbox.maxvec().z()));
+	simDataPtr = new smoke::core::SimData(bbox2, voxel_size, RESET(), SUBSTEPS(), MAX_SUBSTEPS(),
+			SIM_TIME_SCALE());
 
 	blindDataManager.insertSimDataPtr(gdp, simDataPtr);
 	GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, simDataPtr->getDensityPtr(),

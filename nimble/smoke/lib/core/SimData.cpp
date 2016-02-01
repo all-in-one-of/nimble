@@ -11,7 +11,10 @@ namespace smoke
 {
 namespace core
 {
-SimData::SimData(openvdb::CoordBBox bbox, smoke::core::Scalar voxelSize)
+SimData::SimData(openvdb::CoordBBox bbox, smoke::core::Scalar voxelSize, Scalar resetFrame,
+		Scalar subSteps, Scalar maxSubSteps, Scalar simulationTimeScale) :
+		resetFrame(resetFrame), subSteps(subSteps), maxSubSteps(maxSubSteps), simulationTimeScale(
+				simulationTimeScale)
 {
 	openvdb::initialize();
 	densityPtr = openvdb::FloatGrid::create();
@@ -26,25 +29,24 @@ SimData::SimData(openvdb::CoordBBox bbox, smoke::core::Scalar voxelSize)
 	openvdb::CoordBBox bbox1(min1, max1);
 	densityPtr->fill(bbox1, 0.0, 1);
 	temperaturePtr->fill(bbox1, 0.0, 1);
-	velocityPtr->fill(bbox1, openvdb::math::Vec3<float>(0,0,0), 1);
+	velocityPtr->fill(bbox1, openvdb::math::Vec3<float>(0, 0, 0), 1);
 
-	openvdb::math::Transform::Ptr linearTransform =
-			openvdb::math::Transform::createLinearTransform(1);
+	openvdb::math::Transform::Ptr linearTransform = openvdb::math::Transform::createLinearTransform(
+			1);
 	linearTransform->postScale(voxelSize);
 	densityPtr->setTransform(linearTransform);
 	temperaturePtr->setTransform(linearTransform);
 	velocityPtr->setTransform(linearTransform);
 
-	subSteps = 1;
-	resetFrame = 1;
-	maxSubSteps = 10;
-	simulationTimeScale = 1;
+//	resetFrame = 1;
+//	subSteps = 1;
+//	maxSubSteps = 10;
+//	simulationTimeScale = 1;
 }
 
 SimData::~SimData()
 {
 }
-
 
 }
 }

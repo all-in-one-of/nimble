@@ -14,31 +14,26 @@ using namespace HDK_Sample;
 void newSopOperator(OP_OperatorTable *table)
 {
 	table->addOperator(
-			new OP_Operator("smoke_solve_sim", "Smoke Solve Sim", SOP_Smoke_Solve_Sim::myConstructor,
-							SOP_Smoke_Solve_Sim::myTemplateList, 1, // Min required sources
-							1,	// Maximum sources
-							0));
+			new OP_Operator("smoke_solve_sim", "Smoke Solve Sim",
+					SOP_Smoke_Solve_Sim::myConstructor,
+					SOP_Smoke_Solve_Sim::myTemplateList, 1, // Min required sources
+					1,	// Maximum sources
+					0));
 }
-// The names here have to match the inline evaluation functions
-static PRM_Name names[] =
-{ PRM_Name("reset", "Reset Frame"), PRM_Name("subSteps", "Sub Steps"), PRM_Name("sim_time_scale",
-																				"Simulation Time Scale"), };
-static PRM_Default defaultSubSteps(1);
+
 PRM_Template SOP_Smoke_Solve_Sim::myTemplateList[] =
-{ PRM_Template(PRM_INT, 1, &names[0], PRMoneDefaults), PRM_Template(PRM_INT_J, 1, &names[1],
-																	&defaultSubSteps),
-	PRM_Template(PRM_FLT, 1, &names[2], PRMoneDefaults), PRM_Template(), };
-int * SOP_Smoke_Solve_Sim::myOffsets = 0;
+{ PRM_Template(), };
+
 OP_Node *
-SOP_Smoke_Solve_Sim::myConstructor(OP_Network *net, const char *name, OP_Operator *op)
+SOP_Smoke_Solve_Sim::myConstructor(OP_Network *net, const char *name,
+		OP_Operator *op)
 {
 	return new SOP_Smoke_Solve_Sim(net, name, op);
 }
-SOP_Smoke_Solve_Sim::SOP_Smoke_Solve_Sim(OP_Network *net, const char *name, OP_Operator *op) :
+SOP_Smoke_Solve_Sim::SOP_Smoke_Solve_Sim(OP_Network *net, const char *name,
+		OP_Operator *op) :
 		SOP_Node(net, name, op)
 {
-	if (!myOffsets)
-		myOffsets = allocIndirect(32);
 //	sourceGDP = NULL;
 	simDataPtr = NULL;
 	myLastCookTime = 0;
@@ -56,10 +51,12 @@ OP_ERROR SOP_Smoke_Solve_Sim::cookMySop(OP_Context &context)
 		return error();
 	OP_Node::flags().timeDep = 1;
 	duplicateSource(0, context);
-//	sourceGDP = inputGeo(0);
+	//Access Blind Data
+	smoke::houdini::utils::BlindDataManager blindDataManager;
+	simDataPtr = blindDataManager.extractSimDataPtr(gdp);
 	chman = OPgetDirector()->getChannelManager();
 	currframe = chman->getSample(context.getTime());
-	reset = RESET();
+	reset = simDataPtr->getResetFrame();
 
 	if (currframe <= reset)
 	{
@@ -68,15 +65,13 @@ OP_ERROR SOP_Smoke_Solve_Sim::cookMySop(OP_Context &context)
 //	currframe += 0.05;	// Add a bit to avoid floating point error
 
 	//Access Blind Data
-	smoke::houdini::utils::BlindDataManager blindDataManager;
-	simDataPtr = blindDataManager.extractSimDataPtr(gdp);
-	//Access Blind Data
 	smoke::houdini::adapter::SolveSimAdapter adapter(simDataPtr);
 
 	while (myLastCookTime < currframe)
 	{
 		fpreal fps = OPgetDirector()->getChannelManager()->getSamplesPerSec();
-		adapter.stepForward(fps / simDataPtr->getSimulationTimeScale(), simDataPtr->getSubSteps());
+		adapter.stepForward(fps / simDataPtr->getSimulationTimeScale(),
+				simDataPtr->getSubSteps());
 		myLastCookTime += 1;
 //		std::cout << "myLastCookTime : " << myLastCookTime << std::endl;
 	}

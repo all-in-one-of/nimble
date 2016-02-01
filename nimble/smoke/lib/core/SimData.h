@@ -19,7 +19,8 @@ namespace core
 class SimData
 {
 public:
-	SimData(openvdb::CoordBBox bbox, smoke::core::Scalar voxelSize);
+	SimData(openvdb::CoordBBox bbox, smoke::core::Scalar voxelSize, Scalar resetFrame,
+			Scalar subSteps, Scalar maxSubSteps, Scalar simulationTimeScale);
 	virtual ~SimData();
 	const openvdb::FloatGrid::Ptr& getDensityPtr() const
 	{

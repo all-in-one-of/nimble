@@ -24,24 +24,9 @@ void newSopOperator(OP_OperatorTable *table)
 					0));
 }
 
-static PRM_Name names[] =
-{ PRM_Name("reset", "Reset Frame"), PRM_Name("subSteps", "Sub Steps"), PRM_Name(
-		"maxSubSteps", "Max Sub Steps"), PRM_Name("sim_time_scale",
-		"Simulation Time Scale"), PRM_Name("collision_tolerance",
-		"Collision Tolerance") };
-
-static PRM_Default defaultSubSteps(1);
-static PRM_Default defaultMaxSubSteps(200);
-static PRM_Default defaultCollTolerance(0.01);
-
 PRM_Template SOP_NS_Add_Source::myTemplateList[] =
-{ PRM_Template(PRM_INT, 1, &names[0], PRMoneDefaults), PRM_Template(PRM_INT_J,
-		1, &names[1], &defaultSubSteps), PRM_Template(PRM_INT_J, 1, &names[2],
-		&defaultMaxSubSteps), PRM_Template(PRM_FLT, 1, &names[3],
-		PRMoneDefaults), PRM_Template(PRM_FLT, 1, &names[4],
-		&defaultCollTolerance), PRM_Template(), };
+{ PRM_Template(), };
 
-int * SOP_NS_Add_Source::myOffsets = 0;
 
 OP_Node *
 SOP_NS_Add_Source::myConstructor(OP_Network *net, const char *name,
