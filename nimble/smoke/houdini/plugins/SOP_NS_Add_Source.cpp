@@ -70,46 +70,18 @@ OP_ERROR SOP_NS_Add_Source::cookMySop(OP_Context &context)
 	if (inputs.lock(context) >= UT_ERROR_ABORT)
 		return error();
 
-//	std::cout <<"SOP_NS_Add_Source::cookMySop START" << std::endl;
-//	openvdb::initialize();
-
 	duplicateSource(0, context);
 	const GU_Detail* gdpB = inputGeo(1);
 
-//	GU_PrimVDB* vdb = (GU_PrimVDB*) gdp->getGEOPrimitiveByIndex(0);
-//	openvdb::GridBase::Ptr gridBaseA = vdb->getGridPtr();
-//	openvdb::FloatGrid::Ptr gridA = openvdb::gridPtrCast<openvdb::FloatGrid>(
-//			gridBaseA);
-//	openvdb::FloatGrid::Ptr copyOfGridA = gridA->deepCopy();
-//	vdb->setGrid(*copyOfGridA);
-
 	GU_PrimVDB* srcVdb = (GU_PrimVDB*) gdpB->getGEOPrimitiveByIndex(0);
 	openvdb::GridBase::Ptr gridBaseB = srcVdb->getGridPtr();
-	openvdb::FloatGrid::Ptr sourceGridB = openvdb::gridPtrCast<openvdb::FloatGrid>(
-			gridBaseB);
+	openvdb::FloatGrid::Ptr sourceGridB = openvdb::gridPtrCast<
+			openvdb::FloatGrid>(gridBaseB);
 
-//	openvdb::FloatGrid::Ptr targetGridB = copyOfGridA->deepCopy();
-//
-//		const openvdb::math::Transform
-//		    &sourceXform = sourceGridB->transform(),
-//		    &targetXform = targetGridB->transform();
-//		openvdb::Mat4R xform =
-//		    sourceXform.baseMap()->getAffineMap()->getMat4() *
-//		    targetXform.baseMap()->getAffineMap()->getMat4().inverse();
-//		openvdb::tools::GridTransformer transformer(xform);
-//		transformer.transformGrid<openvdb::tools::QuadraticSampler, openvdb::FloatGrid>(
-//		    *sourceGridB, *targetGridB);
-//
-////		openvdb::tools::compMax(*copyOfGridA, *targetGridB);
-//		openvdb::tools::compMax(*gridA, *targetGridB);
+	smoke::houdini::utils::BlindDataManager blindDataManager;
+	smoke::core::SimData* simDataPtr = blindDataManager.extractSimDataPtr(gdp);
 
-		//Access Blind Data
-		smoke::houdini::utils::BlindDataManager blindDataManager;
-		smoke::core::SimData* simDataPtr = blindDataManager.extractSimDataPtr(gdp);
-
-		smoke::houdini::adapters::AddSourceAdapter adapter(simDataPtr,sourceGridB);
-//		std::cout <<"SOP_NS_Add_Source::cookMySop END" << std::endl;
-
+	smoke::houdini::adapters::AddSourceAdapter adapter(simDataPtr, sourceGridB);
 
 	return error();
 }

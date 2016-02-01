@@ -77,6 +77,10 @@ void SOP_NS_Create_Sim::initSystem()
 	blindDataManager.insertSimDataPtr(gdp, simDataPtr);
 	GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, simDataPtr->getDensityPtr(),
 	NULL, "density");
+	GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, simDataPtr->getTemperaturePtr(),
+	NULL, "temperature");
+	GU_PrimVDB::buildFromGrid((GU_Detail&) *gdp, simDataPtr->getVelocityPtr(),
+	NULL, "velocity");
 }
 
 OP_ERROR SOP_NS_Create_Sim::cookMySop(OP_Context &context)

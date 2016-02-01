@@ -19,10 +19,32 @@ namespace core
 class SimData
 {
 public:
-	SimData(openvdb::CoordBBox bbox,smoke::core::Scalar voxelSize);
+	SimData(openvdb::CoordBBox bbox, smoke::core::Scalar voxelSize);
 	virtual ~SimData();
-	const openvdb::FloatGrid::Ptr& getDensityPtr() const;
-	void setDensityPtr(const openvdb::FloatGrid::Ptr& densityGridPtr);
+	const openvdb::FloatGrid::Ptr& getDensityPtr() const
+	{
+		return densityPtr;
+	}
+	void setDensityPtr(const openvdb::FloatGrid::Ptr& densityPtr)
+	{
+		this->densityPtr = densityPtr;
+	}
+	const openvdb::FloatGrid::Ptr& getTemperaturePtr() const
+	{
+		return temperaturePtr;
+	}
+	void setTemperaturePtr(const openvdb::FloatGrid::Ptr& temperaturePtr)
+	{
+		this->temperaturePtr = temperaturePtr;
+	}
+	const openvdb::VectorGrid::Ptr& getVelocityPtr() const
+	{
+		return velocityPtr;
+	}
+	void setVelocityPtr(const openvdb::VectorGrid::Ptr& velocityPtr)
+	{
+		this->velocityPtr = velocityPtr;
+	}
 	Scalar getResetFrame() const
 	{
 		return resetFrame;
@@ -51,6 +73,8 @@ public:
 	std::vector<smoke::sources::VdbSource*> sources;
 private:
 	openvdb::FloatGrid::Ptr densityPtr;
+	openvdb::FloatGrid::Ptr temperaturePtr;
+	openvdb::VectorGrid::Ptr velocityPtr;
 	Scalar resetFrame;
 	Scalar subSteps;
 	Scalar maxSubSteps;
