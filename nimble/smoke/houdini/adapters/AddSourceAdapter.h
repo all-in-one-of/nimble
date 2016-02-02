@@ -20,8 +20,10 @@ namespace adapters
 class AddSourceAdapter
 {
 public:
-	AddSourceAdapter(smoke::core::SimData* simDataPtr,smoke::core::FloatGridPtr source);
+	AddSourceAdapter();
 	virtual ~AddSourceAdapter();
+	void addFloatSource(smoke::core::SimData* simDataPtr,smoke::core::FloatGridPtr grid);
+	void addVectorSource(smoke::core::SimData* simDataPtr,smoke::core::VectorGridPtr grid);
 };
 
 } /* namespace adapters */

@@ -5,8 +5,8 @@
  *      Author: user
  */
 
-#ifndef LIB_SOURCES_VDBSOURCE_H_
-#define LIB_SOURCES_VDBSOURCE_H_
+#ifndef LIB_SOURCES_VDBFLOATSOURCE_H_
+#define LIB_SOURCES_VDBFLOATSOURCE_H_
 
 #include <smoke/lib/core/CommonTypes.h>
 namespace smoke
@@ -14,15 +14,15 @@ namespace smoke
 namespace sources
 {
 
-class VdbSource
+class VdbFloatSource
 {
 public:
-	VdbSource(smoke::core::FloatGridPtr floatGridPtr) :
+	VdbFloatSource(smoke::core::FloatGridPtr floatGridPtr) :
 			floatGridPtr(floatGridPtr)
 	{
 
 	}
-	virtual ~VdbSource();
+	virtual ~VdbFloatSource();
 
 	const smoke::core::FloatGridPtr& getFloatGridPtr() const
 	{
@@ -41,4 +41,4 @@ private:
 } /* namespace sources */
 } /* namespace smoke */
 
-#endif /* LIB_SOURCES_VDBSOURCE_H_ */
+#endif /* LIB_SOURCES_VDBFLOATSOURCE_H_ */

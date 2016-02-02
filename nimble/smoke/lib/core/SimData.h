@@ -10,7 +10,8 @@
 
 #include <openvdb/openvdb.h>
 #include <smoke/lib/core/CommonTypes.h>
-#include <smoke/lib/sources/VdbSource.h>
+#include <smoke/lib/sources/VdbFloatSource.h>
+#include <smoke/lib/sources/VdbVectorSource.h>
 
 namespace smoke
 {
@@ -71,8 +72,9 @@ public:
 		this->maxSubSteps = maxSubSteps;
 	}
 
-	std::vector<smoke::sources::VdbSource*> density_sources;
-	std::vector<smoke::sources::VdbSource*> temperature_sources;
+	std::vector<smoke::sources::VdbFloatSource*> density_sources;
+	std::vector<smoke::sources::VdbFloatSource*> temperature_sources;
+	std::vector<smoke::sources::VdbVectorSource*> velocity_sources;
 private:
 	openvdb::FloatGrid::Ptr densityPtr;
 	openvdb::FloatGrid::Ptr temperaturePtr;

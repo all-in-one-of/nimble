@@ -6,7 +6,8 @@
  */
 
 #include <smoke/houdini/adapters/AddSourceAdapter.h>
-#include <smoke/lib/sources/VdbSource.h>
+#include <smoke/lib/sources/VdbFloatSource.h>
+#include <smoke/lib/sources/VdbVectorSource.h>
 
 namespace smoke
 {
@@ -15,18 +16,30 @@ namespace houdini
 namespace adapters
 {
 
-AddSourceAdapter::AddSourceAdapter(smoke::core::SimData* simDataPtr,smoke::core::FloatGridPtr grid)
+AddSourceAdapter::AddSourceAdapter()
 {
-//	std::cout <<"AddSourceAdapter::AddSourceAdapter CALLED" << std::endl;
-	smoke::sources::VdbSource* density_src = new smoke::sources::VdbSource(grid);
-	simDataPtr->density_sources.push_back(density_src);
-	smoke::sources::VdbSource* temperature_src = new smoke::sources::VdbSource(grid);
-	simDataPtr->temperature_sources.push_back(temperature_src);
+//	smoke::sources::VdbVectorSource* velocity_src = new smoke::sources::VdbVectorSource(grid);
 }
 
 AddSourceAdapter::~AddSourceAdapter()
 {
 	// TODO Auto-generated destructor stub
+}
+
+void AddSourceAdapter::addFloatSource(smoke::core::SimData* simDataPtr,
+		smoke::core::FloatGridPtr grid)
+{
+	smoke::sources::VdbFloatSource* density_src = new smoke::sources::VdbFloatSource(grid);
+	simDataPtr->density_sources.push_back(density_src);
+	smoke::sources::VdbFloatSource* temperature_src = new smoke::sources::VdbFloatSource(grid);
+	simDataPtr->temperature_sources.push_back(temperature_src);
+}
+
+void AddSourceAdapter::addVectorSource(smoke::core::SimData* simDataPtr,
+		smoke::core::VectorGridPtr grid)
+{
+	smoke::sources::VdbVectorSource* velocity_src = new smoke::sources::VdbVectorSource(grid);
+	simDataPtr->velocity_sources.push_back(velocity_src);
 }
 
 } /* namespace adapters */

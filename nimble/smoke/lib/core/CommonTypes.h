@@ -8,6 +8,7 @@ namespace core
 {
 typedef double Scalar;
 typedef openvdb::FloatGrid::Ptr FloatGridPtr;
+typedef openvdb::VectorGrid::Ptr VectorGridPtr;
 }
 }
 #endif /* COMMONTYPES_H_ */

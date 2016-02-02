@@ -5,7 +5,7 @@
  *      Author: user
  */
 
-#include <smoke/lib/sources/VdbSource.h>
+#include <smoke/lib/sources/VdbVectorSource.h>
 
 namespace smoke
 {
@@ -13,7 +13,7 @@ namespace sources
 {
 
 
-VdbSource::~VdbSource()
+VdbVectorSource::~VdbVectorSource()
 {
 	// TODO Auto-generated destructor stub
 }

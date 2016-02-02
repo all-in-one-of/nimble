@@ -30,9 +30,9 @@ SourceManager::~SourceManager()
 } /* namespace smoke */
 
 void smoke::solver::SourceManager::accumulateField(const smoke::core::FloatGridPtr& gridA,
-		std::vector<smoke::sources::VdbSource*>& sources)
+		std::vector<smoke::sources::VdbFloatSource*>& sources)
 {
-	for (std::vector<smoke::sources::VdbSource*>::iterator source = sources.begin();
+	for (std::vector<smoke::sources::VdbFloatSource*>::iterator source = sources.begin();
 			source != sources.end(); ++source)
 	{
 		smoke::core::FloatGridPtr sourceGridB = (*source)->getFloatGridPtr();
@@ -54,5 +54,25 @@ void smoke::solver::SourceManager::accumulateSources(smoke::core::SimData* simDa
 	accumulateField(simDataPtr->getDensityPtr(), simDataPtr->density_sources);
 
 	accumulateField(simDataPtr->getTemperaturePtr(), simDataPtr->temperature_sources);
+
+	//---------------
+	openvdb::VectorGrid::Ptr gridA = simDataPtr->getVelocityPtr();
+	std::vector<smoke::sources::VdbVectorSource*>& sources = simDataPtr->velocity_sources;
+
+	for (std::vector<smoke::sources::VdbVectorSource*>::iterator source = sources.begin();
+			source != sources.end(); ++source)
+	{
+		smoke::core::VectorGridPtr sourceGridB = (*source)->getVectorGridPtr();
+		openvdb::VectorGrid::Ptr targetGridB = gridA->deepCopy();
+		const openvdb::math::Transform &sourceXform = sourceGridB->transform(), &targetXform =
+				targetGridB->transform();
+		openvdb::Mat4R xform = sourceXform.baseMap()->getAffineMap()->getMat4()
+				* targetXform.baseMap()->getAffineMap()->getMat4().inverse();
+		openvdb::tools::GridTransformer transformer(xform);
+		transformer.transformGrid<openvdb::tools::QuadraticSampler, openvdb::VectorGrid>(
+				*sourceGridB, *targetGridB);
+		openvdb::tools::compMax(*gridA, *targetGridB);
+	}
+	sources.clear();
 
 }

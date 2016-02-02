@@ -10,7 +10,7 @@
 
 #include <smoke/lib/core/CommonTypes.h>
 #include <smoke/lib/core/SimData.h>
-#include <smoke/lib/sources/VdbSource.h>
+#include <smoke/lib/sources/VdbFloatSource.h>
 
 namespace smoke
 {
@@ -32,7 +32,7 @@ private:
 //	std::vector<smoke::sources::VdbSource*> sources;
 
 	void accumulateField(const smoke::core::FloatGridPtr& gridA,
-			std::vector<smoke::sources::VdbSource*>& sources);
+			std::vector<smoke::sources::VdbFloatSource*>& sources);
 };
 
 } /* namespace solver */
