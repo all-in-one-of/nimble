@@ -71,7 +71,8 @@ public:
 		this->maxSubSteps = maxSubSteps;
 	}
 
-	std::vector<smoke::sources::VdbSource*> sources;
+	std::vector<smoke::sources::VdbSource*> density_sources;
+	std::vector<smoke::sources::VdbSource*> temperature_sources;
 private:
 	openvdb::FloatGrid::Ptr densityPtr;
 	openvdb::FloatGrid::Ptr temperaturePtr;

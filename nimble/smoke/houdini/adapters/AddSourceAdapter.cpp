@@ -18,8 +18,10 @@ namespace adapters
 AddSourceAdapter::AddSourceAdapter(smoke::core::SimData* simDataPtr,smoke::core::FloatGridPtr grid)
 {
 //	std::cout <<"AddSourceAdapter::AddSourceAdapter CALLED" << std::endl;
-	smoke::sources::VdbSource* vdb_src = new smoke::sources::VdbSource(grid);
-	simDataPtr->sources.push_back(vdb_src);
+	smoke::sources::VdbSource* density_src = new smoke::sources::VdbSource(grid);
+	simDataPtr->density_sources.push_back(density_src);
+	smoke::sources::VdbSource* temperature_src = new smoke::sources::VdbSource(grid);
+	simDataPtr->temperature_sources.push_back(temperature_src);
 }
 
 AddSourceAdapter::~AddSourceAdapter()

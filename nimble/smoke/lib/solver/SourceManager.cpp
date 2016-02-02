@@ -29,28 +29,30 @@ SourceManager::~SourceManager()
 } /* namespace solver */
 } /* namespace smoke */
 
+void smoke::solver::SourceManager::accumulateField(const smoke::core::FloatGridPtr& gridA,
+		std::vector<smoke::sources::VdbSource*>& sources)
+{
+	for (std::vector<smoke::sources::VdbSource*>::iterator source = sources.begin();
+			source != sources.end(); ++source)
+	{
+		smoke::core::FloatGridPtr sourceGridB = (*source)->getFloatGridPtr();
+		openvdb::FloatGrid::Ptr targetGridB = gridA->deepCopy();
+		const openvdb::math::Transform &sourceXform = sourceGridB->transform(), &targetXform =
+				targetGridB->transform();
+		openvdb::Mat4R xform = sourceXform.baseMap()->getAffineMap()->getMat4()
+				* targetXform.baseMap()->getAffineMap()->getMat4().inverse();
+		openvdb::tools::GridTransformer transformer(xform);
+		transformer.transformGrid<openvdb::tools::QuadraticSampler, openvdb::FloatGrid>(
+				*sourceGridB, *targetGridB);
+		openvdb::tools::compMax(*gridA, *targetGridB);
+	}
+	sources.clear();
+}
+
 void smoke::solver::SourceManager::accumulateSources(smoke::core::SimData* simDataPtr)
 {
-	smoke::core::FloatGridPtr gridA = simDataPtr->getDensityPtr();
-	for (std::vector<smoke::sources::VdbSource*>::iterator source =
-			simDataPtr->sources.begin(); source != simDataPtr->sources.end(); ++source)
-	{
-//		std::cout << "SourceManager::accumulateSources START" << std::endl;
-		smoke::core::FloatGridPtr sourceGridB = (*source)->getFloatGridPtr();
+	accumulateField(simDataPtr->getDensityPtr(), simDataPtr->density_sources);
 
-		openvdb::FloatGrid::Ptr targetGridB = gridA->deepCopy();
+	accumulateField(simDataPtr->getTemperaturePtr(), simDataPtr->temperature_sources);
 
-			const openvdb::math::Transform
-			    &sourceXform = sourceGridB->transform(),
-			    &targetXform = targetGridB->transform();
-			openvdb::Mat4R xform =
-			    sourceXform.baseMap()->getAffineMap()->getMat4() *
-			    targetXform.baseMap()->getAffineMap()->getMat4().inverse();
-			openvdb::tools::GridTransformer transformer(xform);
-			transformer.transformGrid<openvdb::tools::QuadraticSampler, openvdb::FloatGrid>(
-			    *sourceGridB, *targetGridB);
-
-			openvdb::tools::compMax(*gridA, *targetGridB);
-	}
-	simDataPtr->sources.clear();
 }

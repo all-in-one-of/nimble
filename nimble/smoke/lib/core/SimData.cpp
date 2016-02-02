@@ -38,10 +38,6 @@ SimData::SimData(openvdb::CoordBBox bbox, smoke::core::Scalar voxelSize, Scalar 
 	temperaturePtr->setTransform(linearTransform);
 	velocityPtr->setTransform(linearTransform);
 
-//	resetFrame = 1;
-//	subSteps = 1;
-//	maxSubSteps = 10;
-//	simulationTimeScale = 1;
 }
 
 SimData::~SimData()

@@ -31,6 +31,8 @@ private:
 	smoke::core::SimData* simDataPtr;
 //	std::vector<smoke::sources::VdbSource*> sources;
 
+	void accumulateField(const smoke::core::FloatGridPtr& gridA,
+			std::vector<smoke::sources::VdbSource*>& sources);
 };
 
 } /* namespace solver */
